@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link type="text/css" href="{{url_for('static', filename='css/styles.css')}}" rel="stylesheet" />
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon" />
+
+    {% block title %}
+        {% if title %}
+            <title>Про Flask - {{title}}</title>
+        {% else %}
+            <title>Про Flask</title>
+        {% endif %}
+    {% endblock %}
+</head>
+<body>
+<video id="background-video" autoplay muted loop playsinline>
+    <source src="{{ url_for('static', filename='videos/background_7.mp4') }}" type="video/mp4">
+    Ваш браузер не поддерживает воспроизведение видео.
+</video>
+
+<div class="container">
+    {% block content %}
+        {% block mainmenu %}
+        <header class="header">
+            <div class="logo">
+                <a href="/"><img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Логотип"></a>
+            </div>
+              <button class="menu-button" onclick="toggleMenu()">☰ Меню</button>
+            <ul id="menu" class="mainmenu">
+                {% for m in menu %}
+                    {% if current_user.is_authenticated %}
+                        <!-- Показываем меню для авторизованных пользователей -->
+                        {% if m.title != 'Авторизация' %}
+                            <li><a href="{{ m.url }}">{{ m.title }}</a></li>
+                        {% endif %}
+                    {% else %}
+                        <!-- Показываем меню для неавторизованных пользователей -->
+                        {% if m.title != 'Профиль' %}
+                            <li><a href="{{ m.url }}">{{ m.title }}</a></li>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </header>
+        {% endblock mainmenu %}
+
+        <main class="main-content">
+            {% if title %}
+                <h1>{{title}}</h1>
+            {% else %}
+                <h1>Про Flask</h1>
+            {% endif %}
+            <div class="content-body">
+                <!-- Основной контент -->
+                {% block body %}{% endblock body %}
+            </div>
+        </main>
+    {% endblock %}
+</div>
+
+<script src="{{url_for('static', filename='js/mobile.js')}}" rel="javascript"></script>
+</body>
+</html>

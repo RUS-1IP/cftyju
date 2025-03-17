@@ -1,0 +1,38 @@
+{% extends "admin/base_admin.html" %}
+
+{% block content %}
+{{ super() }}
+
+<div style="position: relative;">
+    <!-- Кнопка в правом верхнем углу -->
+    <a href="{{ url_for('admin.add_game') }}"
+       style="position: absolute; top: 10px; right: 10px; background: linear-gradient(135deg, #5B46E5, #8A71F5); color: white;
+              padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+        Добавить игру
+    </a>
+</div>
+
+{% for cat, msg in get_flashed_messages(True) %}
+<div class="flash {{ cat }}">{{ msg }}</div>
+{% endfor %}
+<h1>Список игр</h1>
+<ul class="list-posts">
+    {% for game in games %}
+    <li>
+        <p class="title"><a href="{{ game.link }}" target="_blank">{{ game.title }}</a></p>
+        <p class="annonce">{{ game.description[:50] | striptags }}</p>
+        {% if game.cover %}
+        <img src="data:image/jpeg;base64,{{ game.cover|b64encode }}" alt="{{ game.title }}"
+             style="max-width: 100px; display: block; margin: 10px 0;">
+        {% endif %}
+        <form action="{{ url_for('admin.delete_game', game_id=game.id) }}" method="post" style="display:inline;">
+            <button type="submit" class="delete-button">Удалить</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+
+{% if not games %}
+<p>Игры пока не добавлены.</p>
+{% endif %}
+{% endblock %}
